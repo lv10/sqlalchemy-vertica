@@ -5,6 +5,17 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      force_bump:
+        description: "Force version bump level (optional)"
+        required: false
+        default: "none"
+        type: choice
+        options:
+          - none
+          - patch
+          - minor
+          - major
 
 concurrency:
   group: release-${{ github.ref }}
@@ -77,8 +88,29 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-          uv run semantic-release -v version
-          uv run semantic-release -v publish
+          EXTRA_ARGS=""
+          if [ "${{ inputs.force_bump }}" = "patch" ]; then
+            EXTRA_ARGS="--patch"
+          elif [ "${{ inputs.force_bump }}" = "minor" ]; then
+            EXTRA_ARGS="--minor"
+          elif [ "${{ inputs.force_bump }}" = "major" ]; then
+            EXTRA_ARGS="--major"
+          fi
+
+          # Clean any stale build artifacts
+          rm -rf dist/
+
+          # Run versioning with optional forced bump
+          uv run semantic-release -v version $EXTRA_ARGS
+
+          # Check if dist files were created and determine release state
+          if [ -d "dist" ] && [ "$(ls -A dist 2>/dev/null)" ]; then
+            echo "released=true" >> "$GITHUB_OUTPUT"
+            uv run semantic-release -v publish
+          else
+            echo "released=false" >> "$GITHUB_OUTPUT"
+            echo "No new release generated."
+          fi
 
       - name: Upload Build Artifacts
         if: steps.sr.outputs.released == 'true'
@@ -110,5 +142,4 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: dist/
-          password: ${{ secrets.PYPI_TOKEN }}
           skip-existing: true
