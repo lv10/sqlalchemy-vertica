@@ -1,0 +1,106 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sqlalchemy-vertica"
+version = "1.0.0"
+description = "Vertica dialect for SQLAlchemy 2.0+ with Async & Alembic support"
+readme = "README.rst"
+license = "MIT"
+authors = [
+    {name = "Luis Villamarin", email = "luis@lv10.me"}
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Database",
+    "Topic :: Database :: Front-Ends",
+]
+requires-python = ">=3.9"
+dependencies = [
+    "sqlalchemy>=2.0.0",
+    "typing_extensions>=4.6.0",
+]
+
+[project.optional-dependencies]
+vertica-python = [
+    "vertica-python>=1.0.0",
+]
+asyncio = [
+    "vertica-python>=1.0.0",
+    "greenlet>=3.0.0",
+]
+pyodbc = [
+    "pyodbc>=4.0.35",
+]
+turbodbc = [
+    "turbodbc>=4.0.0",
+]
+alembic = [
+    "alembic>=1.11.0",
+]
+all = [
+    "vertica-python>=1.0.0",
+    "greenlet>=3.0.0",
+    "pyodbc>=4.0.35",
+    "turbodbc>=4.0.0",
+    "alembic>=1.11.0",
+]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.1.0",
+    "coverage[toml]>=7.3.0",
+    "mypy>=1.5.0",
+    "flake8>=6.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/lv10/sqlalchemy-vertica"
+Repository = "https://github.com/lv10/sqlalchemy-vertica"
+
+[project.entry-points."sqlalchemy.dialects"]
+vertica = "sqlalchemy_vertica.dialect_vertica_python:VerticaDialect"
+"vertica.vertica_python" = "sqlalchemy_vertica.dialect_vertica_python:VerticaDialect"
+"vertica.vertica_python_async" = "sqlalchemy_vertica.dialect_vertica_python_async:VerticaDialect_vertica_python_async"
+"vertica.async_vertica_python" = "sqlalchemy_vertica.dialect_vertica_python_async:VerticaDialect_vertica_python_async"
+"vertica.pyodbc" = "sqlalchemy_vertica.dialect_pyodbc:VerticaDialect"
+"vertica.turbodbc" = "sqlalchemy_vertica.dialect_turbodbc:VerticaDialect"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["sqlalchemy_vertica*"]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra --cov=sqlalchemy_vertica --cov-report=term-missing"
+testpaths = ["tests"]
+asyncio_mode = "auto"
+
+[tool.coverage.run]
+source = ["sqlalchemy_vertica"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError",
+    "\\.\\.\\.",
+]
+
+[tool.mypy]
+python_version = "3.12"
+warn_unused_configs = true
+ignore_missing_imports = true
