@@ -5,6 +5,7 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -41,12 +42,12 @@ jobs:
       - name: Run Linting & Type Checking (Ubuntu only)
         if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12'
         run: |
-          uv run ruff check .
-          uv run mypy sqlalchemy_vertica
+          uv run --python ${{ matrix.python-version }} ruff check .
+          uv run --python ${{ matrix.python-version }} mypy sqlalchemy_vertica
 
       - name: Upload Coverage to Codecov
         if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12'
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         continue-on-error: true
         with:
           file: ./coverage.xml
