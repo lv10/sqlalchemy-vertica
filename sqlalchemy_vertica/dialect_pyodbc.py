@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import Any
+
 from sqlalchemy.connectors.pyodbc import PyODBCConnector
 
 from .base import VerticaDialect as BaseVerticaDialect

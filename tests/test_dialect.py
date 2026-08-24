@@ -1,16 +1,17 @@
 from __future__ import annotations
 
-from typing import Any, Optional
+from typing import Any
+
 import sqlalchemy as sa
 from sqlalchemy.engine.url import make_url
 
 from sqlalchemy_vertica.base import VerticaDialect
+from sqlalchemy_vertica.dialect_pyodbc import VerticaDialect as PyODBCDialect
+from sqlalchemy_vertica.dialect_turbodbc import VerticaDialect as TurbodbcDialect
 from sqlalchemy_vertica.dialect_vertica_python import VerticaDialect as VerticaPythonDialect
 from sqlalchemy_vertica.dialect_vertica_python_async import (
     VerticaDialect_vertica_python_async as VerticaPythonAsyncDialect,
 )
-from sqlalchemy_vertica.dialect_pyodbc import VerticaDialect as PyODBCDialect
-from sqlalchemy_vertica.dialect_turbodbc import VerticaDialect as TurbodbcDialect
 
 
 def test_dialect_registry() -> None:
@@ -94,10 +95,10 @@ def test_server_version_info_parsing() -> None:
     dialect = VerticaDialect()
 
     class MockConn:
-        def __init__(self, ver_str: Optional[str]) -> None:
+        def __init__(self, ver_str: str | None) -> None:
             self.ver_str = ver_str
 
-        def scalar(self, stmt: Any, params: Any = None) -> Optional[str]:
+        def scalar(self, stmt: Any, params: Any = None) -> str | None:
             return self.ver_str
 
     # Test Vertica 24.1
@@ -129,14 +130,14 @@ def test_default_schema_name() -> None:
     dialect = VerticaDialect()
 
     class MockConn:
-        def scalar(self, stmt: Any, params: Any = None) -> Optional[str]:
+        def scalar(self, stmt: Any, params: Any = None) -> str | None:
             return "analytics"
 
     conn = MockConn()
     assert dialect._get_default_schema_name(conn) == "analytics"
 
     class MockConnNone:
-        def scalar(self, stmt: Any, params: Any = None) -> Optional[str]:
+        def scalar(self, stmt: Any, params: Any = None) -> str | None:
             return None
 
     assert dialect._get_default_schema_name(MockConnNone()) == "public"

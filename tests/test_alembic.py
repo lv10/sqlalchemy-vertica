@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 from unittest.mock import MagicMock
+
 import pytest
 from sqlalchemy import Column, Index, Integer, MetaData, String, Table
 

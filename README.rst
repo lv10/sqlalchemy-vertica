@@ -3,6 +3,8 @@ sqlalchemy-vertica
 
 Modern **Vertica Analytic Database** dialect for **SQLAlchemy 2.0+** with full support for **Async operations**, **Alembic migrations**, and modern Python (3.9 - 3.14+).
 
+.. image:: https://img.shields.io/pypi/v/sqlalchemy-vertica.svg
+    :target: https://pypi.org/project/sqlalchemy-vertica/
 .. image:: https://img.shields.io/badge/SQLAlchemy-2.0+-blue.svg
     :target: https://www.sqlalchemy.org/
 .. image:: https://img.shields.io/badge/python-3.9+-blue.svg
@@ -11,6 +13,8 @@ Modern **Vertica Analytic Database** dialect for **SQLAlchemy 2.0+** with full s
     :target: https://www.vertica.com/
 .. image:: https://img.shields.io/badge/license-MIT-green.svg
     :target: https://opensource.org/licenses/MIT
+.. image:: https://github.com/lv10/sqlalchemy-vertica/actions/workflows/ci.yml/badge.svg
+    :target: https://github.com/lv10/sqlalchemy-vertica/actions/workflows/ci.yml
 .. image:: https://img.shields.io/badge/Buy%20Me%20a%20Coffee-Donate-yellow.svg
     :target: https://buymeacoffee.com/luisvillamg
 

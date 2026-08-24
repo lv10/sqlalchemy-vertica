@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import Any, Dict, List, Tuple
+from typing import Any
+
 import pytest
 from sqlalchemy import exc
 from sqlalchemy.types import INTEGER, VARCHAR
@@ -9,9 +10,9 @@ from sqlalchemy_vertica.base import VerticaDialect
 
 
 class MockConnectionForReflection:
-    def __init__(self, routes: Dict[str, Any]) -> None:
+    def __init__(self, routes: dict[str, Any]) -> None:
         self.routes = routes
-        self.executed_queries: List[Tuple[str, Any]] = []
+        self.executed_queries: list[tuple[str, Any]] = []
 
     def execute(self, stmt: Any, params: Any = None) -> MockResult:
         query = str(stmt).strip()
@@ -32,10 +33,10 @@ class MockConnectionForReflection:
 
 
 class MockResult:
-    def __init__(self, rows: List[Tuple[Any, ...]]) -> None:
+    def __init__(self, rows: list[tuple[Any, ...]]) -> None:
         self._rows = rows
 
-    def fetchall(self) -> List[Tuple[Any, ...]]:
+    def fetchall(self) -> list[tuple[Any, ...]]:
         return list(self._rows)
 
     def scalar(self) -> Any:

@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from typing import Any, List, Optional, Tuple
+from typing import Any
 from unittest.mock import MagicMock, patch
+
 import pytest
 from sqlalchemy import pool, text
 from sqlalchemy.engine.url import make_url
@@ -23,25 +24,25 @@ class MockSyncCursorForAsync:
         self.closed = False
         self._rows = [(100,), (200,), (300,)]
 
-    def execute(self, operation: Any, parameters: Optional[Any] = None) -> None:
+    def execute(self, operation: Any, parameters: Any | None = None) -> None:
         pass
 
     def executemany(self, operation: Any, seq_of_parameters: Any) -> None:
         self.rowcount = len(seq_of_parameters)
 
-    def fetchone(self) -> Optional[Tuple[Any, ...]]:
+    def fetchone(self) -> tuple[Any, ...] | None:
         if self._rows:
             return self._rows.pop(0)
         return None
 
-    def fetchmany(self, size: Optional[int] = None) -> List[Tuple[Any, ...]]:
+    def fetchmany(self, size: int | None = None) -> list[tuple[Any, ...]]:
         if size is None:
             size = self.arraysize
         res = self._rows[:size]
         self._rows = self._rows[size:]
         return res
 
-    def fetchall(self) -> List[Tuple[Any, ...]]:
+    def fetchall(self) -> list[tuple[Any, ...]]:
         res = list(self._rows)
         self._rows = []
         return res

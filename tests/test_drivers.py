@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 from unittest.mock import MagicMock, patch
+
 import pytest
 from sqlalchemy.engine.url import make_url
 
-from sqlalchemy_vertica.dialect_vertica_python import VerticaDialect as VerticaPythonDialect
 from sqlalchemy_vertica.dialect_pyodbc import VerticaDialect as PyODBCDialect
 from sqlalchemy_vertica.dialect_turbodbc import VerticaDialect as TurbodbcDialect
+from sqlalchemy_vertica.dialect_vertica_python import VerticaDialect as VerticaPythonDialect
 
 
 def test_vertica_python_driver_import_dbapi() -> None:

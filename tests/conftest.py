@@ -1,20 +1,21 @@
 from __future__ import annotations
 
-from typing import Any, List, Optional, Tuple
+from typing import Any
+
 import pytest
 from sqlalchemy import Column, ForeignKey, Integer, MetaData, String, Table
 
 
 class MockCursor:
-    def __init__(self, query_handler: Optional[Any] = None) -> None:
+    def __init__(self, query_handler: Any | None = None) -> None:
         self.query_handler = query_handler
-        self.description: Optional[List[Tuple[Any, ...]]] = None
+        self.description: list[tuple[Any, ...]] | None = None
         self.rowcount: int = -1
         self.arraysize: int = 1
-        self._rows: List[Tuple[Any, ...]] = []
+        self._rows: list[tuple[Any, ...]] = []
         self._closed: bool = False
 
-    def execute(self, operation: Any, parameters: Optional[Any] = None) -> MockCursor:
+    def execute(self, operation: Any, parameters: Any | None = None) -> MockCursor:
         if self.query_handler:
             self.description, self._rows = self.query_handler(operation, parameters)
             self.rowcount = len(self._rows)
@@ -28,19 +29,19 @@ class MockCursor:
         self.rowcount = len(seq_of_parameters)
         return self
 
-    def fetchone(self) -> Optional[Tuple[Any, ...]]:
+    def fetchone(self) -> tuple[Any, ...] | None:
         if self._rows:
             return self._rows.pop(0)
         return None
 
-    def fetchmany(self, size: Optional[int] = None) -> List[Tuple[Any, ...]]:
+    def fetchmany(self, size: int | None = None) -> list[tuple[Any, ...]]:
         if size is None:
             size = self.arraysize
         res = self._rows[:size]
         self._rows = self._rows[size:]
         return res
 
-    def fetchall(self) -> List[Tuple[Any, ...]]:
+    def fetchall(self) -> list[tuple[Any, ...]]:
         res = list(self._rows)
         self._rows = []
         return res
@@ -50,7 +51,7 @@ class MockCursor:
 
 
 class MockConnection:
-    def __init__(self, query_handler: Optional[Any] = None) -> None:
+    def __init__(self, query_handler: Any | None = None) -> None:
         self.query_handler = query_handler
         self.committed: bool = False
         self.rolled_back: bool = False
@@ -70,7 +71,7 @@ class MockConnection:
 
 
 class MockDBAPI:
-    def __init__(self, query_handler: Optional[Any] = None) -> None:
+    def __init__(self, query_handler: Any | None = None) -> None:
         self.query_handler = query_handler
         self.paramstyle = "named"
         self.Error = Exception

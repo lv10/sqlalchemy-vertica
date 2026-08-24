@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import asyncio
-from typing import Any, List, Optional, Sequence
+from collections.abc import Sequence
+from typing import Any
+
 from sqlalchemy import pool
 from sqlalchemy.connectors.asyncio import (
     AsyncAdapt_dbapi_connection,
@@ -41,7 +43,7 @@ class AsyncVerticaCursor:
     def arraysize(self, value: int) -> None:
         self._sync_cursor.arraysize = value
 
-    async def execute(self, operation: Any, parameters: Optional[Any] = None) -> Any:
+    async def execute(self, operation: Any, parameters: Any | None = None) -> Any:
         if parameters is not None:
             return await asyncio.to_thread(self._sync_cursor.execute, operation, parameters)
         return await asyncio.to_thread(self._sync_cursor.execute, operation)
@@ -49,15 +51,15 @@ class AsyncVerticaCursor:
     async def executemany(self, operation: Any, seq_of_parameters: Sequence[Any]) -> Any:
         return await asyncio.to_thread(self._sync_cursor.executemany, operation, seq_of_parameters)
 
-    async def fetchone(self) -> Optional[Any]:
+    async def fetchone(self) -> Any | None:
         return await asyncio.to_thread(self._sync_cursor.fetchone)
 
-    async def fetchmany(self, size: Optional[int] = None) -> List[Any]:
+    async def fetchmany(self, size: int | None = None) -> list[Any]:
         if size is not None:
             return await asyncio.to_thread(self._sync_cursor.fetchmany, size)
         return await asyncio.to_thread(self._sync_cursor.fetchmany)
 
-    async def fetchall(self) -> List[Any]:
+    async def fetchall(self) -> list[Any]:
         return await asyncio.to_thread(self._sync_cursor.fetchall)
 
     async def close(self) -> None:

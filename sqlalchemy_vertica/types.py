@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import Any, Optional, Type
+from typing import Any
+
 from sqlalchemy import types as sqltypes
 from sqlalchemy.types import (
     BIGINT,
@@ -22,49 +23,49 @@ from sqlalchemy.types import (
 class LONG_VARCHAR(sqltypes.String):
     __visit_name__ = "LONG_VARCHAR"
 
-    def __init__(self, length: Optional[int] = None, **kwargs: Any) -> None:
+    def __init__(self, length: int | None = None, **kwargs: Any) -> None:
         super().__init__(length=length, **kwargs)
 
 
 class LONG_VARBINARY(sqltypes.LargeBinary):
     __visit_name__ = "LONG_VARBINARY"
 
-    def __init__(self, length: Optional[int] = None, **kwargs: Any) -> None:
+    def __init__(self, length: int | None = None, **kwargs: Any) -> None:
         super().__init__(length=length, **kwargs)
 
 
 class VARBINARY(sqltypes.LargeBinary):
     __visit_name__ = "VARBINARY"
 
-    def __init__(self, length: Optional[int] = None, **kwargs: Any) -> None:
+    def __init__(self, length: int | None = None, **kwargs: Any) -> None:
         super().__init__(length=length, **kwargs)
 
 
 class BYTEA(sqltypes.LargeBinary):
     __visit_name__ = "BYTEA"
 
-    def __init__(self, length: Optional[int] = None, **kwargs: Any) -> None:
+    def __init__(self, length: int | None = None, **kwargs: Any) -> None:
         super().__init__(length=length, **kwargs)
 
 
 class RAW(sqltypes.LargeBinary):
     __visit_name__ = "RAW"
 
-    def __init__(self, length: Optional[int] = None, **kwargs: Any) -> None:
+    def __init__(self, length: int | None = None, **kwargs: Any) -> None:
         super().__init__(length=length, **kwargs)
 
 
 class DOUBLE_PRECISION(sqltypes.Float):
     __visit_name__ = "DOUBLE_PRECISION"
 
-    def __init__(self, precision: Optional[int] = None, **kwargs: Any) -> None:
+    def __init__(self, precision: int | None = None, **kwargs: Any) -> None:
         super().__init__(precision=precision, **kwargs)
 
 
 class TIME(sqltypes.TIME):
     __visit_name__ = "TIME"
 
-    def __init__(self, precision: Optional[int] = None, timezone: bool = False, **kwargs: Any) -> None:
+    def __init__(self, precision: int | None = None, timezone: bool = False, **kwargs: Any) -> None:
         self.precision = precision
         super().__init__(timezone=timezone, **kwargs)
 
@@ -72,7 +73,7 @@ class TIME(sqltypes.TIME):
 class TIMETZ(sqltypes.TIME):
     __visit_name__ = "TIMETZ"
 
-    def __init__(self, precision: Optional[int] = None, **kwargs: Any) -> None:
+    def __init__(self, precision: int | None = None, **kwargs: Any) -> None:
         self.precision = precision
         kwargs.pop("timezone", None)
         super().__init__(timezone=True, **kwargs)
@@ -81,7 +82,7 @@ class TIMETZ(sqltypes.TIME):
 class TIMESTAMP(sqltypes.TIMESTAMP):
     __visit_name__ = "TIMESTAMP"
 
-    def __init__(self, precision: Optional[int] = None, timezone: bool = False, **kwargs: Any) -> None:
+    def __init__(self, precision: int | None = None, timezone: bool = False, **kwargs: Any) -> None:
         self.precision = precision
         super().__init__(timezone=timezone, **kwargs)
 
@@ -89,7 +90,7 @@ class TIMESTAMP(sqltypes.TIMESTAMP):
 class TIMESTAMPTZ(sqltypes.TIMESTAMP):
     __visit_name__ = "TIMESTAMPTZ"
 
-    def __init__(self, precision: Optional[int] = None, **kwargs: Any) -> None:
+    def __init__(self, precision: int | None = None, **kwargs: Any) -> None:
         self.precision = precision
         kwargs.pop("timezone", None)
         super().__init__(timezone=True, **kwargs)
@@ -98,7 +99,7 @@ class TIMESTAMPTZ(sqltypes.TIMESTAMP):
 class GEOMETRY(sqltypes.UserDefinedType):
     __visit_name__ = "GEOMETRY"
 
-    def __init__(self, srid: Optional[int] = None) -> None:
+    def __init__(self, srid: int | None = None) -> None:
         self.srid = srid
 
     def get_col_spec(self, **kw: Any) -> str:
@@ -110,7 +111,7 @@ class GEOMETRY(sqltypes.UserDefinedType):
 class GEOGRAPHY(sqltypes.UserDefinedType):
     __visit_name__ = "GEOGRAPHY"
 
-    def __init__(self, srid: Optional[int] = None) -> None:
+    def __init__(self, srid: int | None = None) -> None:
         self.srid = srid
 
     def get_col_spec(self, **kw: Any) -> str:
@@ -128,8 +129,8 @@ class INTERVAL(sqltypes.TypeEngine):
 
     def __init__(
         self,
-        fields: Optional[str] = None,
-        precision: Optional[int] = None,
+        fields: str | None = None,
+        precision: int | None = None,
     ) -> None:
         self.fields = fields
         self.precision = precision
@@ -140,8 +141,8 @@ class ARRAY(sqltypes.TypeEngine):
 
     def __init__(
         self,
-        item_type: Type[sqltypes.TypeEngine] | sqltypes.TypeEngine,
-        length: Optional[int] = None,
+        item_type: type[sqltypes.TypeEngine] | sqltypes.TypeEngine,
+        length: int | None = None,
     ) -> None:
         if isinstance(item_type, type):
             self.item_type = item_type()
@@ -155,8 +156,8 @@ class MAP(sqltypes.TypeEngine):
 
     def __init__(
         self,
-        key_type: Type[sqltypes.TypeEngine] | sqltypes.TypeEngine,
-        value_type: Type[sqltypes.TypeEngine] | sqltypes.TypeEngine,
+        key_type: type[sqltypes.TypeEngine] | sqltypes.TypeEngine,
+        value_type: type[sqltypes.TypeEngine] | sqltypes.TypeEngine,
     ) -> None:
         if isinstance(key_type, type):
             self.key_type = key_type()
@@ -172,7 +173,7 @@ class MAP(sqltypes.TypeEngine):
 class ROW(sqltypes.TypeEngine):
     __visit_name__ = "ROW"
 
-    def __init__(self, **fields: Type[sqltypes.TypeEngine] | sqltypes.TypeEngine) -> None:
+    def __init__(self, **fields: type[sqltypes.TypeEngine] | sqltypes.TypeEngine) -> None:
         self.fields = {
             k: v() if isinstance(v, type) else v for k, v in fields.items()
         }

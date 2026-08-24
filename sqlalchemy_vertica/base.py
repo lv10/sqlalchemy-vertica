@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import itertools
 import re
-from typing import Any, Dict, List, Optional, Sequence, Tuple, cast
+from collections.abc import Sequence
+from typing import Any, cast
 
 from sqlalchemy import exc, sql, util
 from sqlalchemy.engine import default, reflection
@@ -45,9 +46,9 @@ from .types import (
     RAW,
     ROW,
     TIME,
+    TIMESTAMP,
     TIMESTAMPTZ,
     TIMETZ,
-    TIMESTAMP,
     UUID,
     VARBINARY,
 )
@@ -78,7 +79,7 @@ RESERVED_WORDS = {
     "with",
 }
 
-ischema_names: Dict[str, Any] = {
+ischema_names: dict[str, Any] = {
     "INT": INTEGER,
     "INTEGER": INTEGER,
     "INT8": INTEGER,
@@ -406,7 +407,7 @@ class VerticaDialect(default.DefaultDialect):
         schema = connection.scalar(sql.text("SELECT current_schema()"))
         return str(schema) if schema else "public"
 
-    def _get_server_version_info(self, connection: Any) -> Tuple[int, ...]:
+    def _get_server_version_info(self, connection: Any) -> tuple[int, ...]:
         v = connection.scalar(sql.text("SELECT version()"))
         if not v:
             return (0, 0, 0)
@@ -418,7 +419,7 @@ class VerticaDialect(default.DefaultDialect):
             return tuple(groups)
         return (0, 0, 0)
 
-    def create_connect_args(self, url: Any) -> Tuple[Sequence[Any], Dict[str, Any]]:
+    def create_connect_args(self, url: Any) -> tuple[Sequence[Any], dict[str, Any]]:
         opts = url.translate_connect_args(username="user")
         opts.update(url.query)
         return [], opts
@@ -434,7 +435,7 @@ class VerticaDialect(default.DefaultDialect):
         return bool(res)
 
     def has_table(
-        self, connection: Any, table_name: str, schema: Optional[str] = None, **kw: Any
+        self, connection: Any, table_name: str, schema: str | None = None, **kw: Any
     ) -> bool:
         if schema is None:
             schema = self._get_default_schema_name(connection)
@@ -450,7 +451,7 @@ class VerticaDialect(default.DefaultDialect):
         return bool(res)
 
     def has_sequence(
-        self, connection: Any, sequence_name: str, schema: Optional[str] = None, **kw: Any
+        self, connection: Any, sequence_name: str, schema: str | None = None, **kw: Any
     ) -> bool:
         if schema is None:
             schema = self._get_default_schema_name(connection)
@@ -466,7 +467,7 @@ class VerticaDialect(default.DefaultDialect):
         return bool(res)
 
     def has_type(
-        self, connection: Any, type_name: str, schema: Optional[str] = None, **kw: Any
+        self, connection: Any, type_name: str, schema: str | None = None, **kw: Any
     ) -> bool:
         stmt = sql.text(
             "SELECT EXISTS ("
@@ -478,7 +479,7 @@ class VerticaDialect(default.DefaultDialect):
         return bool(res)
 
     @reflection.cache
-    def get_schema_names(self, connection: Any, **kw: Any) -> List[str]:
+    def get_schema_names(self, connection: Any, **kw: Any) -> list[str]:
         stmt = sql.text(
             "SELECT schema_name FROM v_catalog.schemata "
             "ORDER BY schema_name"
@@ -489,8 +490,8 @@ class VerticaDialect(default.DefaultDialect):
 
     @reflection.cache
     def get_table_names(
-        self, connection: Any, schema: Optional[str] = None, **kw: Any
-    ) -> List[str]:
+        self, connection: Any, schema: str | None = None, **kw: Any
+    ) -> list[str]:
         if schema is not None:
             stmt = sql.text(
                 "SELECT table_name FROM v_catalog.tables "
@@ -510,8 +511,8 @@ class VerticaDialect(default.DefaultDialect):
 
     @reflection.cache
     def get_temp_table_names(
-        self, connection: Any, schema: Optional[str] = None, **kw: Any
-    ) -> List[str]:
+        self, connection: Any, schema: str | None = None, **kw: Any
+    ) -> list[str]:
         if schema is not None:
             stmt = sql.text(
                 "SELECT table_name FROM v_catalog.tables "
@@ -531,8 +532,8 @@ class VerticaDialect(default.DefaultDialect):
 
     @reflection.cache
     def get_view_names(
-        self, connection: Any, schema: Optional[str] = None, **kw: Any
-    ) -> List[str]:
+        self, connection: Any, schema: str | None = None, **kw: Any
+    ) -> list[str]:
         if schema is not None:
             stmt = sql.text(
                 "SELECT table_name FROM v_catalog.views "
@@ -555,7 +556,7 @@ class VerticaDialect(default.DefaultDialect):
         self,
         connection: Any,
         view_name: str,
-        schema: Optional[str] = None,
+        schema: str | None = None,
         **kw: Any,
     ) -> str:
         if schema is None:
@@ -571,7 +572,7 @@ class VerticaDialect(default.DefaultDialect):
 
     @reflection.cache
     def get_table_comment(
-        self, connection: Any, table_name: str, schema: Optional[str] = None, **kw: Any
+        self, connection: Any, table_name: str, schema: str | None = None, **kw: Any
     ) -> ReflectedTableComment:
         if schema is None:
             schema = self._get_default_schema_name(connection)
@@ -587,7 +588,7 @@ class VerticaDialect(default.DefaultDialect):
 
     @reflection.cache
     def get_table_oid(
-        self, connection: Any, table_name: str, schema: Optional[str] = None, **kw: Any
+        self, connection: Any, table_name: str, schema: str | None = None, **kw: Any
     ) -> int:
         if schema is None:
             schema = self._get_default_schema_name(connection)
@@ -608,8 +609,8 @@ class VerticaDialect(default.DefaultDialect):
 
     @reflection.cache
     def get_columns(
-        self, connection: Any, table_name: str, schema: Optional[str] = None, **kw: Any
-    ) -> List[ReflectedColumn]:
+        self, connection: Any, table_name: str, schema: str | None = None, **kw: Any
+    ) -> list[ReflectedColumn]:
         if schema is None:
             schema = self._get_default_schema_name(connection)
 
@@ -650,7 +651,7 @@ class VerticaDialect(default.DefaultDialect):
             if row[0] is not None
         }
 
-        columns: List[ReflectedColumn] = []
+        columns: list[ReflectedColumn] = []
         for row in cols_rows:
             name = str(row[0])
             dtype = str(row[1]).lower()
@@ -674,7 +675,7 @@ class VerticaDialect(default.DefaultDialect):
 
     @reflection.cache
     def get_pk_constraint(
-        self, connection: Any, table_name: str, schema: Optional[str] = None, **kw: Any
+        self, connection: Any, table_name: str, schema: str | None = None, **kw: Any
     ) -> ReflectedPrimaryKeyConstraint:
         if schema is None:
             schema = self._get_default_schema_name(connection)
@@ -699,8 +700,8 @@ class VerticaDialect(default.DefaultDialect):
 
     @reflection.cache
     def get_foreign_keys(
-        self, connection: Any, table_name: str, schema: Optional[str] = None, **kw: Any
-    ) -> List[ReflectedForeignKeyConstraint]:
+        self, connection: Any, table_name: str, schema: str | None = None, **kw: Any
+    ) -> list[ReflectedForeignKeyConstraint]:
         if schema is None:
             schema = self._get_default_schema_name(connection)
 
@@ -714,7 +715,7 @@ class VerticaDialect(default.DefaultDialect):
         )
         rows = connection.execute(stmt, {"table": table_name, "schema": schema}).fetchall()
 
-        fkeys: List[ReflectedForeignKeyConstraint] = []
+        fkeys: list[ReflectedForeignKeyConstraint] = []
         for name, group in itertools.groupby(rows, key=lambda r: r[0]):
             items = list(group)
             fkeys.append(
@@ -733,8 +734,8 @@ class VerticaDialect(default.DefaultDialect):
 
     @reflection.cache
     def get_unique_constraints(
-        self, connection: Any, table_name: str, schema: Optional[str] = None, **kw: Any
-    ) -> List[ReflectedUniqueConstraint]:
+        self, connection: Any, table_name: str, schema: str | None = None, **kw: Any
+    ) -> list[ReflectedUniqueConstraint]:
         if schema is None:
             schema = self._get_default_schema_name(connection)
 
@@ -747,7 +748,7 @@ class VerticaDialect(default.DefaultDialect):
         )
         rows = connection.execute(stmt, {"table": table_name, "schema": schema}).fetchall()
 
-        constraints: List[ReflectedUniqueConstraint] = []
+        constraints: list[ReflectedUniqueConstraint] = []
         for name, group in itertools.groupby(rows, key=lambda r: r[0]):
             constraints.append(
                 cast(
@@ -762,8 +763,8 @@ class VerticaDialect(default.DefaultDialect):
 
     @reflection.cache
     def get_check_constraints(
-        self, connection: Any, table_name: str, schema: Optional[str] = None, **kw: Any
-    ) -> List[ReflectedCheckConstraint]:
+        self, connection: Any, table_name: str, schema: str | None = None, **kw: Any
+    ) -> list[ReflectedCheckConstraint]:
         if schema is None:
             schema = self._get_default_schema_name(connection)
 
@@ -780,25 +781,25 @@ class VerticaDialect(default.DefaultDialect):
 
     @reflection.cache
     def get_indexes(
-        self, connection: Any, table_name: str, schema: Optional[str] = None, **kw: Any
-    ) -> List[ReflectedIndex]:
+        self, connection: Any, table_name: str, schema: str | None = None, **kw: Any
+    ) -> list[ReflectedIndex]:
         return []
 
     def _get_column_info(
         self,
         name: str,
         format_type: str,
-        default: Optional[str],
+        default: str | None,
         nullable: bool,
-        schema: Optional[str],
-    ) -> Dict[str, Any]:
+        schema: str | None,
+    ) -> dict[str, Any]:
         attype = re.sub(r"\(.*\)", "", format_type).strip()
 
         charlen_match = re.search(r"\(([\d,]+)\)", format_type)
         charlen = charlen_match.group(1) if charlen_match else None
 
-        args: Tuple[Any, ...] = ()
-        kwargs: Dict[str, Any] = {}
+        args: tuple[Any, ...] = ()
+        kwargs: dict[str, Any] = {}
 
         if attype in ("numeric", "decimal"):
             if charlen:

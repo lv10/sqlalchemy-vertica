@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import Any
+
 import pytest
 import sqlalchemy as sa
 from sqlalchemy.types import (
@@ -33,9 +34,9 @@ from sqlalchemy_vertica.types import (
     RAW,
     ROW,
     TIME,
+    TIMESTAMP,
     TIMESTAMPTZ,
     TIMETZ,
-    TIMESTAMP,
     UUID,
     VARBINARY,
 )

@@ -1,6 +1,8 @@
 from __future__ import annotations
 
-from typing import Any, Dict, Sequence, Tuple
+from collections.abc import Sequence
+from typing import Any
+
 from sqlalchemy.engine.url import URL
 
 from .base import VerticaDialect as BaseVerticaDialect
@@ -15,8 +17,8 @@ class VerticaDialect(BaseVerticaDialect):
         import turbodbc
         return turbodbc
 
-    def create_connect_args(self, url: URL) -> Tuple[Sequence[Any], Dict[str, Any]]:
-        opts: Dict[str, Any] = {}
+    def create_connect_args(self, url: URL) -> tuple[Sequence[Any], dict[str, Any]]:
+        opts: dict[str, Any] = {}
         if url.host:
             opts["host"] = url.host
         if url.port is not None:
