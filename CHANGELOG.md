@@ -2,6 +2,23 @@
 
 <!-- version list -->
 
+## v1.0.1 (2026-08-24)
+
+### Bug Fixes
+
+- **ci**: Fix PyPI publishing and workflow release triggers
+  ([#9](https://github.com/lv10/sqlalchemy-vertica/pull/9),
+  [`01599db`](https://github.com/lv10/sqlalchemy-vertica/commit/01599db6adc401e621cf97cd20c24fb700417361))
+
+### Continuous Integration
+
+- Add workflow_dispatch trigger and upgrade codecov-action to v5
+  ([`10f12b9`](https://github.com/lv10/sqlalchemy-vertica/commit/10f12b95510f46e08b2d291baa3d1544bfecc95a))
+
+- Configure automated PyPI deployments with Trusted Publishing and quality gate
+  ([`bd5b6af`](https://github.com/lv10/sqlalchemy-vertica/commit/bd5b6afec1d73b30eaee34fa9f8ec750c9a6423e))
+
+
 ## v1.0.0 (2026-08-24)
 
 ### Continuous Integration
