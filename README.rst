@@ -11,6 +11,8 @@ Modern **Vertica Analytic Database** dialect for **SQLAlchemy 2.0+** with full s
     :target: https://www.vertica.com/
 .. image:: https://img.shields.io/badge/license-MIT-green.svg
     :target: https://opensource.org/licenses/MIT
+.. image:: https://img.shields.io/badge/Buy%20Me%20a%20Coffee-Donate-yellow.svg
+    :target: https://buymeacoffee.com/luisvillamg
 
 
 Features
@@ -200,6 +202,17 @@ Run the automated test suite with ``pytest`` and ``pytest-cov``:
 .. code-block:: bash
 
     pytest -v --cov=sqlalchemy_vertica --cov-report=term-missing
+
+
+Support
+-------
+
+If you find this project helpful and want to support its maintenance and development, you can buy me a coffee:
+
+.. image:: https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png
+    :target: https://www.buymeacoffee.com/luisvillamg
+    :alt: Buy Me A Coffee
+    :width: 180px
 
 
 License
