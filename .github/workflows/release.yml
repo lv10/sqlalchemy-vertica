@@ -1,4 +1,4 @@
-name: Semantic Release
+name: Release & Publish to PyPI
 
 on:
   push:
@@ -6,17 +6,54 @@ on:
       - main
   workflow_dispatch:
 
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
 permissions:
-  contents: write
-  id-token: write
+  contents: read
 
 jobs:
-  release:
+  quality-gate:
+    name: Pre-Release Quality Checks
     runs-on: ubuntu-latest
-    concurrency: release
-    environment: pypi
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install 3.12
+
+      - name: Install Dependencies
+        run: uv sync --dev --extra vertica-python --extra asyncio --extra alembic --extra pyodbc
+
+      - name: Run Tests
+        run: uv run pytest
+
+      - name: Run Lint & Type Check
+        run: |
+          uv run ruff check .
+          uv run mypy sqlalchemy_vertica
+
+  release:
+    name: Semantic Release
+    needs: quality-gate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    outputs:
+      released: ${{ steps.sr.outputs.released }}
+      version: ${{ steps.sr.outputs.version }}
+      tag: ${{ steps.sr.outputs.tag }}
+    steps:
+      - name: Checkout Code (Full History)
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -27,34 +64,51 @@ jobs:
           enable-cache: true
 
       - name: Set up Python
-        run: uv python install
+        run: uv python install 3.12
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: uv sync --dev --extra vertica-python --extra asyncio --extra alembic --extra pyodbc
 
-      - name: Python Semantic Release
-        id: release
+      - name: Python Semantic Release (Version & Tag)
+        id: sr
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git config --global user.name "github-actions [bot]"
+          git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-          # We run versioning and publishing manually via uv to ensure it has access to the environment
-          uv run semantic-release -v version 2>&1 | tee /tmp/sr_version.txt
-          if grep -q "The next version is:" /tmp/sr_version.txt; then
-            echo "released=true" >> $GITHUB_OUTPUT
-          fi
-
+          uv run semantic-release -v version
           uv run semantic-release -v publish
 
-      - name: Publish to PyPI
-        if: steps.release.outputs.released == 'true'
-        run: |
-          if [ -n "${{ secrets.PYPI_TOKEN }}" ]; then
-            uv publish --token "${{ secrets.PYPI_TOKEN }}"
-          else
-            uv publish
-          fi
-        env:
-          UV_PUBLISH_TOKEN: ${{ secrets.PYPI_TOKEN }}
+      - name: Upload Build Artifacts
+        if: steps.sr.outputs.released == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-packages
+          path: dist/
+          if-no-files-found: error
+
+  publish-pypi:
+    name: Publish to PyPI
+    needs: release
+    if: needs.release.outputs.released == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/sqlalchemy-vertica
+    permissions:
+      id-token: write # Required for Trusted Publishing (OIDC)
+      contents: read
+    steps:
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist-packages
+          path: dist/
+
+      - name: Publish package distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist/
+          password: ${{ secrets.PYPI_TOKEN }}
+          skip-existing: true
