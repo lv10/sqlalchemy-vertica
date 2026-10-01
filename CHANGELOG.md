@@ -2,6 +2,15 @@
 
 <!-- version list -->
 
+## v1.0.2 (2026-10-01)
+
+### Bug Fixes
+
+- **deps**: Update lockfile and fix SQLAlchemy 2.1 async import
+  ([#10](https://github.com/lv10/sqlalchemy-vertica/pull/10),
+  [`d80e1d9`](https://github.com/lv10/sqlalchemy-vertica/commit/d80e1d9dacba257d5827c4ba4aaa5f55d5410957))
+
+
 ## v1.0.1 (2026-08-24)
 
 ### Bug Fixes

@@ -28,7 +28,7 @@ from .types import (
     VARBINARY,
 )
 
-__version__ = "1.0.1"
+__version__ = "1.0.2"
 
 # Register dialects with SQLAlchemy registry
 registry.register("vertica", "sqlalchemy_vertica.dialect_vertica_python", "VerticaDialect")
