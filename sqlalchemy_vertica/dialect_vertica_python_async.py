@@ -8,9 +8,9 @@ from sqlalchemy import pool
 from sqlalchemy.connectors.asyncio import (
     AsyncAdapt_dbapi_connection,
     AsyncAdapt_dbapi_module,
-    await_only,
 )
 from sqlalchemy.engine.url import URL
+from sqlalchemy.util import await_only
 
 from .dialect_vertica_python import VerticaDialect as VerticaDialect_sync
 
