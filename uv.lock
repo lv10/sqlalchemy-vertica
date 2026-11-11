@@ -2611,7 +2611,7 @@ requires-dist = [
     { name = "greenlet", marker = "extra == 'asyncio'", specifier = ">=3.0.0" },
     { name = "pyodbc", marker = "extra == 'all'", specifier = ">=4.0.35" },
     { name = "pyodbc", marker = "extra == 'pyodbc'", specifier = ">=4.0.35" },
-    { name = "sqlalchemy", specifier = ">=2.0.0" },
+    { name = "sqlalchemy", specifier = ">=2.0.42" },
     { name = "turbodbc", marker = "extra == 'all'", specifier = ">=4.0.0" },
     { name = "turbodbc", marker = "extra == 'turbodbc'", specifier = ">=4.0.0" },
     { name = "typing-extensions", specifier = ">=4.6.0" },
