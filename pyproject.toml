@@ -26,7 +26,7 @@ classifiers = [
 ]
 requires-python = ">=3.9"
 dependencies = [
-    "sqlalchemy>=2.0.0",
+    "sqlalchemy>=2.0.42",
     "typing_extensions>=4.6.0",
 ]
 
