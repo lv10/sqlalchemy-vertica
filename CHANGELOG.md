@@ -2,6 +2,20 @@
 
 <!-- version list -->
 
+## v1.0.3 (2026-11-11)
+
+### Bug Fixes
+
+- **deps**: Raise minimum SQLAlchemy to 2.0.42 and test lowest versions in CI
+  ([#12](https://github.com/lv10/sqlalchemy-vertica/pull/12),
+  [`39f41ea`](https://github.com/lv10/sqlalchemy-vertica/commit/39f41ea7c3ce207f6a0857825fcac7d14c01fb8e))
+
+### Chores
+
+- **deps**: Upgrade locked dependencies ([#11](https://github.com/lv10/sqlalchemy-vertica/pull/11),
+  [`d3b1f37`](https://github.com/lv10/sqlalchemy-vertica/commit/d3b1f3754c9672be134578ad539bf9ef264647a1))
+
+
 ## v1.0.2 (2026-10-01)
 
 ### Bug Fixes
