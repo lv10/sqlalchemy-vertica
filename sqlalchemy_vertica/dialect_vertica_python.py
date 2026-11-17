@@ -46,7 +46,18 @@ class VerticaDialect(BaseVerticaDialect):
         query = dict(url.query)
 
         int_keys = {"connection_timeout", "read_timeout", "port"}
-        bool_keys = {"autocommit", "connection_load_balance"}
+        # Options vertica-python reads as booleans. URL query values are always
+        # strings, so e.g. ``ssl=true`` would otherwise raise a TypeError in the
+        # driver and ``binary_transfer=false`` would be truthy.
+        bool_keys = {
+            "autocommit",
+            "connection_load_balance",
+            "ssl",
+            "use_prepared_statements",
+            "disable_copy_local",
+            "binary_transfer",
+            "request_complex_types",
+        }
 
         for key, val in query.items():
             if key in int_keys:
