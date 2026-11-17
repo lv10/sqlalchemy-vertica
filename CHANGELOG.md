@@ -2,6 +2,28 @@
 
 <!-- version list -->
 
+## v1.0.4 (2026-11-17)
+
+### Bug Fixes
+
+- **connect**: Coerce vertica-python boolean URL options
+  ([#16](https://github.com/lv10/sqlalchemy-vertica/pull/16),
+  [`d439db7`](https://github.com/lv10/sqlalchemy-vertica/commit/d439db7fafca7a28523fea51c8137454869162c7))
+
+### Continuous Integration
+
+- Bump GitHub Actions to Node 24 versions
+  ([#13](https://github.com/lv10/sqlalchemy-vertica/pull/13),
+  [`aac021b`](https://github.com/lv10/sqlalchemy-vertica/commit/aac021b4bb2fe2df781fa91079246eeb98e56b3b))
+
+- Refresh uv.lock in semantic-release build command
+  ([#14](https://github.com/lv10/sqlalchemy-vertica/pull/14),
+  [`152ad23`](https://github.com/lv10/sqlalchemy-vertica/commit/152ad230fc1dd107c7b8efd8134921b9e2d90ddc))
+
+- Sync uv.lock project version to 1.0.3 ([#13](https://github.com/lv10/sqlalchemy-vertica/pull/13),
+  [`aac021b`](https://github.com/lv10/sqlalchemy-vertica/commit/aac021b4bb2fe2df781fa91079246eeb98e56b3b))
+
+
 ## v1.0.3 (2026-11-11)
 
 ### Bug Fixes
