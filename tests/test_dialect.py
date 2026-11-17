@@ -75,6 +75,23 @@ def test_create_connect_args_invalid_int_and_bool() -> None:
     assert cparams["connection_load_balance"] is False
 
 
+def test_create_connect_args_driver_bool_options() -> None:
+    dialect = VerticaPythonDialect()
+    url = make_url(
+        "vertica+vertica_python://dbhost/mydb"
+        "?ssl=true&use_prepared_statements=1&disable_copy_local=yes"
+        "&binary_transfer=false&request_complex_types=off&tlsmode=verify-full"
+    )
+    _, cparams = dialect.create_connect_args(url)
+    assert cparams["ssl"] is True
+    assert cparams["use_prepared_statements"] is True
+    assert cparams["disable_copy_local"] is True
+    assert cparams["binary_transfer"] is False
+    assert cparams["request_complex_types"] is False
+    # string-valued options are passed through untouched
+    assert cparams["tlsmode"] == "verify-full"
+
+
 def test_create_connect_args_default_port() -> None:
     dialect = VerticaPythonDialect()
     url = make_url("vertica+vertica_python://myuser:mypass@dbhost/mydb")
